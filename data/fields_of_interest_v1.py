@@ -1,0 +1,30 @@
+_FIELDS_OF_INTEREST = {
+    "ENERGY": "Energie",
+    "MOBILITY": "Mobiliteit",
+    "NATURE": "Natuur",
+    "HEALTH": "Gezondheid",
+    "MEDICINE": "Geneeskunde",
+    "TECHNOLOGY": "Technologie",
+    "ASTRONOMY": "Astronomie",
+    "SPACE": "Ruimtevaart",
+    "AI_ROBOTICS": "AI en robotica",
+    "HISTORY": "Geschiedenis",
+    "ENVIRONMENT": "Milieu",
+    "NEUROSCIENCE": "Brein",
+    "BIOLOGY": "Biologie",
+    "PHYSICS": "Fysica",
+    "CHEMISTRY": "Chemie",
+    "FOOD": "Voeding",
+    "GEOGRAPHY": "Aarde en oceanen",
+    "POLITICS": "Politiek",
+    "HUMANITIES": "Mens & maatschappij",
+    "PHILOSOPHY": "Wijsbegeerte & moraal",
+    "LINGUISTICS": "Kunst & taal",
+    "ECONOMY": "Recht & economie",
+    "MATH": "Wiskunde",
+    "ARCHEOLOGY": "Archeologie",
+    "ARCHITECTURE": "Architectuur",
+    "ENGINEERING": "Engineering"
+}
+
+_NUMFIELDS = len(_FIELDS_OF_INTEREST)
