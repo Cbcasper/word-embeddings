@@ -1,16 +1,19 @@
 import json
 
+from loguru import logger
 from flask import Flask, request
 from flask_cors import CORS
 from flask_restful import Resource, Api
 
 from baselines import rank_article
-from embeddings import embeddings
-from similarities import similarities
+from embeddings import embedding_functions
+from similarities import similarity_parameters, similarity_functions
 
 app = Flask(__name__)
 api = Api(app)
 CORS(app)
+
+Resource.method_decorators.append(logger.catch)
 
 with open("data/article_export.json", "r") as file:
     articles = json.load(file)
@@ -23,11 +26,11 @@ class Articles(Resource):
 
 class Embeddings(Resource):
     def get(self):
-        return list(embeddings.keys())
+        return list(embedding_functions.keys())
 
 class Similarities(Resource):
     def get(self):
-        return list(similarities.keys())
+        return list(similarity_functions.keys())
 
 class Ranking(Resource):
     def get(self):
@@ -36,8 +39,9 @@ class Ranking(Resource):
         similarity = request.args["similarity"]
 
         article = articles[article_id]["content"]
-        ranking = rank_article(article, embeddings[embedding], similarities[similarity])
-        return [{"score": score, "field": field} for score, field in ranking]
+        ranking = rank_article(article, embedding, similarity)
+        return {"ranking": [{"score": score, "field": field} for score, field in ranking],
+                "similarity_parameters": similarity_parameters[similarity]}
 
 api.add_resource(Articles, '/articles')
 api.add_resource(Embeddings, '/embeddings')
