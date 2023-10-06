@@ -1,2 +1,7 @@
 Flask
 flask-restful
+flask-cors
+loguru
+numpy
+sentence_transformers
+scikit-learn
