@@ -19,9 +19,8 @@
         };
         axios.get("http://127.0.0.1:5000/ranking", config)
              .then(response => {
-                ranking = response.data.ranking;
+                ranking = response.data.ranking.reverse();
                 reverse = response.data.similarity_parameters.reverse;
-                console.log(reverse);
              });
     }
 
