@@ -5,3 +5,4 @@ loguru
 numpy
 sentence_transformers
 scikit-learn
+gensim

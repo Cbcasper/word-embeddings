@@ -1,7 +1,7 @@
 import torch
 
-device = "cpu"
+device = torch.device("cpu")
 if torch.backends.mps.is_available():
-    device = "mps"
+    device = torch.device("mps")
 if torch.cuda.is_available():
-    device = "cuda:0"
+    device = torch.device("cuda:0")
