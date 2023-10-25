@@ -11,13 +11,16 @@
     export function update(article, parameters)
     {
         if (article === undefined) return;
+        let url = "http://127.0.0.1:5000/ranking";
+        let data = {
+            article: article.content,
+        };
         let config = {
             params: {
-                id: article.id,
                 ...parameters,
             }
         };
-        axios.get("http://127.0.0.1:5000/ranking", config)
+        axios.post(url, data, config)
              .then(response => {
                 ranking = response.data.ranking.reverse();
                 reverse = response.data.similarity_parameters.reverse;
@@ -29,7 +32,7 @@
     // Source: https://gist.github.com/mlocati/7210513
     function percentToColor(score)
     {
-        let percent = (score - minScore) * 100 / (maxScore - minScore);
+        let percent = (score - minScore) / (maxScore - minScore) * 100;
         if (reverse) percent = 100 - percent;
 
         let red, green, blue = 0;
@@ -49,7 +52,7 @@
     let round = (number, digits) => Math.round(number * Math.pow(10, digits)) / Math.pow(10, digits);
 </script>
 
-<div class="flex-auto grid grid-cols-2 overflow-scroll">
+<div class="h-full grid grid-cols-2 overflow-scroll">
     {#if ranking !== undefined}
         {#each ranking as field, index (field.field)}
             <div class="p-2 flex justify-between border border-sky-100"

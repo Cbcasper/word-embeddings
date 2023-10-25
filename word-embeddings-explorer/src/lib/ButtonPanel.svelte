@@ -14,12 +14,12 @@
     onMount(() => select(options[0]));
 </script>
 
-<div class="w-fit border-2 border-sky-800 rounded-md divide-x-2 divide-sky-800 overflow-hidden">
+<ul class="text-right divide-y divide-sky-800 overflow-scroll snap-y">
     {#each options as option}
-        <button class:bg-slate-300={selectedOption === option}
-                class="p-1 hover:bg-slate-200"
-                on:click={() => select(option)}>
-            {option}
-        </button>
+        <li class:bg-slate-300={selectedOption === option} class="p-2 snap-center hover:bg-slate-200">
+            <button on:click={() => select(option)}>
+                {option}
+            </button>
+        </li>
     {/each}
-</div>
+</ul>

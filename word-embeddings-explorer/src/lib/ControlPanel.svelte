@@ -8,7 +8,6 @@
     export let parameters;
 
     let fields;
-    let tab = "embeddings";
     let selectedEmbedding;
     let selectedSimilarity;
     const dispatch = createEventDispatcher();
@@ -32,24 +31,16 @@
     }
 </script>
 
-<div class="flex-none w-96 flex flex-col">
-    <div class="flex divide-x-2 divide-sky-800 border-b-2 border-sky-800">
-        <button class="flex-auto p-2 hover:bg-slate-200" on:click={() => tab = "embeddings"}
-                class:bg-slate-300={tab === "embeddings"}>
-            Embedding - <span class="font-semibold">{selectedEmbedding}</span>
-        </button>
-        <button class="flex-auto p-2 hover:bg-slate-200" on:click={() => tab = "similarities"}
-                class:bg-slate-300={tab === "similarities"}>
-            Similarity - <span class="font-semibold">{selectedSimilarity}</span>
-        </button>
-    </div>
+<div class="flex-none w-48 flex flex-col divide-y-2 divide-sky-800">
     {#await loadEmbeddings() then embeddings}
-        <div class="m-3" class:hidden={tab !== "embeddings"}>
+        <div class="h-1/2 divide-y-2 divide-sky-800">
+            <div class="p-3 text-xl">Embedding</div>
             <ButtonPanel options={embeddings.data} on:select={select} bind:selectedOption={selectedEmbedding}></ButtonPanel>
         </div>
     {/await}
     {#await loadSimilarities() then similarities}
-        <div class="m-3" class:hidden={tab !== "similarities"}>
+        <div class="h-1/2 divide-y-2 divide-sky-800">
+            <div class="p-3 text-xl">Similarity</div>
             <ButtonPanel options={similarities.data} on:select={select} bind:selectedOption={selectedSimilarity}></ButtonPanel>
         </div>
     {/await}

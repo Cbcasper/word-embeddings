@@ -22,11 +22,11 @@
         <Articles bind:selectedArticle={article} on:select={select}></Articles>
     </div>
     <div class="grow max-w-2/3 h-full divide-y-2 divide-sky-800">
-        <div class="h-1/2 flex divide-x-2 divide-sky-800">
-            <ControlPanel bind:parameters on:select={select}></ControlPanel>
+        <div class="h-1/2">
             <Ranking bind:update={updateRanking}></Ranking>
         </div>
-        <div class="h-1/2">
+        <div class="h-1/2 flex divide-x-2 divide-sky-800">
+            <ControlPanel bind:parameters on:select={select}></ControlPanel>
             <Article {article}></Article>
         </div>
     </div>
