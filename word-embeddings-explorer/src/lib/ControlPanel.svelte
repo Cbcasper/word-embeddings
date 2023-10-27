@@ -1,8 +1,7 @@
 <script>
     import axios from "axios";
+    import { get, writable } from "svelte/store";
     import { tick, createEventDispatcher, onMount } from "svelte";
-
-    import Ranking from "./Ranking.svelte";
     import ButtonPanel from "./ButtonPanel.svelte";
 
     export let parameters;
@@ -10,38 +9,40 @@
     let fields;
     let selectedEmbedding;
     let selectedSimilarity;
-    const dispatch = createEventDispatcher();
 
-    let loadEmbeddings = () => axios.get("http://127.0.0.1:5000/embeddings");
-    let loadSimilarities = () => axios.get("http://127.0.0.1:5000/similarities");
-
+    let parameterConfig = [
+        {
+            url: "embeddings",
+            id: "embedding",
+            title: "Embedding",
+            value: writable()
+        },
+        {
+            url: "similarities",
+            id: "similarity",
+            title: "Similarity",
+            value: writable()
+        }
+    ];
+    let load = parameterType => axios.get(`http://127.0.0.1:5000/${parameterType}`);
+    let getParameters = (result, parameter) => ({...result, [parameter.id]: get(parameter.value)});
+    
     function setParameters()
     {
-        parameters = {
-            embedding: selectedEmbedding,
-            similarity: selectedSimilarity,
-        };
+        if (parameterConfig.every(parameter => get(parameter.value) !== undefined))
+            parameters.set(parameterConfig.reduce(getParameters, {}));
     }
-
-    async function select()
-    {
-        await tick();
-        setParameters();
-        dispatch("select");
-    }
+    for (let parameter of parameterConfig)
+        parameter.value.subscribe(setParameters);
 </script>
 
 <div class="flex-none w-48 flex flex-col divide-y-2 divide-sky-800">
-    {#await loadEmbeddings() then embeddings}
-        <div class="h-1/2 divide-y-2 divide-sky-800">
-            <div class="p-3 text-xl">Embedding</div>
-            <ButtonPanel options={embeddings.data} on:select={select} bind:selectedOption={selectedEmbedding}></ButtonPanel>
-        </div>
-    {/await}
-    {#await loadSimilarities() then similarities}
-        <div class="h-1/2 divide-y-2 divide-sky-800">
-            <div class="p-3 text-xl">Similarity</div>
-            <ButtonPanel options={similarities.data} on:select={select} bind:selectedOption={selectedSimilarity}></ButtonPanel>
-        </div>
-    {/await}
+    {#each parameterConfig as parameter}
+        {#await load(parameter.url) then options}
+            <div class="h-1/2 divide-y-2 divide-sky-800">
+                <div class="p-3 text-xl">{parameter.title}</div>
+                <ButtonPanel options={options.data} parameter={parameter.value}></ButtonPanel>
+            </div>
+        {/await}
+    {/each}
 </div>
