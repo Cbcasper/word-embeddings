@@ -1,20 +1,21 @@
 <script>
     import axios from "axios";
-    import { createEventDispatcher } from "svelte";
 
     export let article;
 
-    const dispatch = createEventDispatcher();
-
-    let loadArticles = () => axios.get("http://127.0.0.1:5000/articles");
+    function loadArticles()
+    {
+        let url = "http://127.0.0.1:5000/dataset";
+        let config = { params: { dataset: "unlabeled" } };
+        return axios.get(url, config);
+    }
     function select(selectedArticle)
     {
         article.set(selectedArticle);
-        dispatch('select');
     }
 </script>
 
-<div class="divide-y divide-sky-100 border-r-2 border-l-8 border-sky-800">
+<div class="h-full w-full divide-y divide-sky-100 border-l-8 border-sky-800 overflow-scroll">
     {#await loadArticles() then data}
         {#each data.data as listedArticle}
             <button class:bg-slate-300={$article === listedArticle.article}

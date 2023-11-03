@@ -1,42 +1,21 @@
 <script>
-    import axios from "axios";
-    import { get } from "svelte/store";
     import { flip } from "svelte/animate";
-    import { sineInOut } from 'svelte/easing';
+    import { sineInOut } from "svelte/easing";
+    import { createEventDispatcher } from "svelte";
 
     export let article;
     export let parameters;
-
-    let ranking;
-    let loadStatus = "none";
-    let placeHolders = [...Array(20).keys()].map(() => Math.random());
-
-    let reverse;
+    export let loadStatus;
+    export let ranking;
+    export let reverse;
+    export let selected;
     $: maxScore = ranking === undefined ? 0 : Math.max(...ranking.map(field => field.score));
     $: minScore = ranking === undefined ? 0 : Math.min(...ranking.map(field => field.score));
 
-    function update()
-    {
-        if (get(article) === undefined || get(parameters) === undefined) return;
-        loadStatus = "loading";
+    let placeHolders = () => [...Array(20).keys()].map(() => Math.random());
+    const dispatch = createEventDispatcher();
 
-        let url = "http://127.0.0.1:5000/ranking";
-        let data = { article: get(article).content };
-        let config = {
-            params: {
-                ...get(parameters),
-            }
-        };
-        axios.post(url, data, config)
-             .then(response => {
-                ranking = response.data.ranking.reverse();
-                reverse = response.data.similarity_parameters.reverse;
-                loadStatus = "ranking";
-             });
-    }
-    article.subscribe(update);
-    parameters.subscribe(update);
-
+    // Adapted from:
     // License: MIT - https://opensource.org/licenses/MIT
     // Author: Michele Locati <michele@locati.it>
     // Source: https://gist.github.com/mlocati/7210513
@@ -62,35 +41,49 @@
     let round = (number, digits) => Math.round(number * Math.pow(10, digits)) / Math.pow(10, digits);
 </script>
 
-<div class="h-full divide-x-2 divide-sky-800 flex">
+<div class="w-72 flex-none rounded-md overflow-hidden divide-y-2 divide-sky-200 text-white bg-sky-800 inset-ring flex flex-col"
+     class:ring-4={selected} class:ring-red-800={selected}>
     {#if loadStatus === "ranking"}
-        <div class="w-96 overflow-scroll">
+        <button class="flex-none px-4 py-2 text-xl text-center overflow-hidden text-ellipsis whitespace-nowrap"
+                on:click={() => { dispatch("select") }}>
+            {article.title}
+        </button>
+        <div class="w-full flex text-xl divide-x-2 divide-sky-200">
+            <div class="grow p-2 text-center">{parameters.embedding}</div>
+            <div class="grow p-2 text-center">{parameters.similarity}</div>
+        </div>
+        <ul class="overflow-scroll divide-y-2 divide-sky-100">
             {#each ranking as field, index (field.field)}
-                <div class="p-2 flex justify-between border border-sky-100"
-                     animate:flip={{ duration: 1000, easing: sineInOut }}>
-                    <div class="p-1 h-fit my-auto font-semibold">
+                <li class="p-2 flex justify-between" animate:flip={{ duration: 1000, easing: sineInOut }}>
+                    <div class="p-1 h-fit my-auto font-semibold overflow-hidden text-ellipsis whitespace-nowrap">
                         {index + 1}. {field.field}
                     </div>
-                    <div class="h-fit py-1 px-2 rounded-md" style="background-color: rgb({percentToColor(field.score)}, .85)">
+                    <div class="h-fit py-1 px-2 rounded-md text-slate-900"
+                        style:background-color="rgb({percentToColor(field.score)}, .85)" >
                         {round(field.score, 4)}
                     </div>
-                </div>
+                </li>
             {/each}
-        </div>
+        </ul>
     {:else if loadStatus === "loading"}
-        <div class="w-96 overflow-hidden">
-            {#each placeHolders as width}
-                <div class="p-2 border border-sky-100">
-                    <div class="motion-safe:animate-pulse flex justify-between content-center">
-                        <div class="h-6 my-auto rounded-xl bg-slate-300" style="width: {5 + width * 10}rem"></div>
-                        <div class="h-8 w-16 px-2 rounded-md bg-slate-300"></div>
-                    </div>
-                </div>
-            {/each}
+        <div class="flex-none px-4 py-2 motion-safe:animate-pulse">
+            <div class="h-7 w-48 mx-auto rounded-xl bg-slate-300"></div>
         </div>
-    {:else if loadStatus === "none"}
-        <div class="w-96"></div>
+        <div class="w-full flex divide-x-2 divide-sky-200">
+            <div class="grow p-2">
+                <div class="motion-safe:animate-pulse h-7 w-20 mx-auto rounded-xl bg-slate-300"></div>
+            </div>
+            <div class="grow p-2">
+                <div class="motion-safe:animate-pulse h-7 w-20 mx-auto rounded-xl bg-slate-300"></div>
+            </div>
+        </div>
+        {#each placeHolders() as width}
+            <div class="p-2">
+                <div class="motion-safe:animate-pulse flex justify-between content-center">
+                    <div class="h-6 my-auto rounded-xl bg-slate-300" style="width: {5 + width * 7.5}rem"></div>
+                    <div class="h-8 w-16 px-2 rounded-md bg-slate-300"></div>
+                </div>
+            </div>
+        {/each}
     {/if}
-    <div>
-    </div>
 </div>

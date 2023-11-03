@@ -3,9 +3,9 @@
     import MdCheck from "svelte-icons/md/MdCheck.svelte";
 
     export let article;
-    
+
     let displayArticle;
-    
+
     let editing = false;
     let hovering = false;
     
@@ -30,7 +30,7 @@
     }
 </script>
 
-<article class="h-full grow pt-4 px-4 flex flex-col relative"
+<article class="h-full w-full pt-4 px-4 flex flex-col relative"
         on:mouseenter={() => hovering = true} on:mouseleave={() => hovering = false}>
     {#if displayArticle !== undefined}
         <div class="pb-2 text-2xl border-b-2 border-sky-600">{displayArticle.title}</div>

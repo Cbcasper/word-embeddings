@@ -2,13 +2,13 @@
     import { createEventDispatcher, onMount } from "svelte";
 
     export let options;
-    export let parameter;
+    export let selected;
 
     const dispatch = createEventDispatcher();
 
     function select(option)
     {
-        parameter.set(option);
+        selected = option;
         dispatch("select");
     }
     onMount(() => { select(options[0]); });
@@ -16,9 +16,9 @@
 
 <ul class="text-right divide-y divide-sky-800 overflow-scroll snap-y">
     {#each options as option}
-        <li class:hover:bg-slate-200={$parameter !== option}
-            class:bg-slate-300={$parameter === option} class="p-2 snap-center">
-            <button on:click={() => select(option)}>
+        <li class="snap-center">
+            <button class:hover:bg-slate-200={selected !== option} class:bg-slate-300={selected === option}
+                    class="p-2 w-full text-right" on:click={() => select(option)}>
                 {option}
             </button>
         </li>
