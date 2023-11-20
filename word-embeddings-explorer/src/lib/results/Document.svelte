@@ -74,6 +74,12 @@
                     reverse: response.data.similarity_parameters.reverse,
                 };
                 selectedArticle = ranking.ranking[0];
+            })
+            .catch(error => {
+                ranking = {
+                    ...ranking,
+                    status: "error"
+                };
             });
     }
     article.subscribe(update);
@@ -152,6 +158,15 @@
                     </div>
                 </div>
             {/each}
+        </div>
+    </div>
+{:else if ranking.status === "error"}
+    <div class="w-[18rem] flex-none rounded-md overflow-hidden text-white inset-ring bg-sky-800"
+        class:ring-4={ranking.selected} class:ring-red-800={ranking.selected}>
+        <div class="h-full w-full flex justify-center items-center">
+            <div class="p-2 h-fit w-fit text-2xl bg-red-800 rounded-md">
+                Can't compute ranking
+            </div>
         </div>
     </div>
 {/if}
