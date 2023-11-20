@@ -1,22 +1,19 @@
+import os
+
 import pandas
 from loguru import logger
-
-from sklearn.svm import SVC, LinearSVC
+from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from nltk.corpus import stopwords
+from joblib import dump, load
 
-from vectorizers import LemmaVectorizer, StemVectorizer
+from content.datasets import prepare_dataset
+from baseline.vectorizers import LemmaVectorizer, StemVectorizer
 
-@logger.catch
-def main():
-    unpack = lambda list: list[0]
-
-    articles = pandas.read_json("../data/articles_dump.json")
-    articles = articles[articles["keywords"].apply(len) == 1]
-    articles[["keywords", "fieldsOfInterest"]] = articles[["keywords", "fieldsOfInterest"]].map(unpack)
-
-    train, test = train_test_split(articles, test_size=.3)
+def train():
+    articles = prepare_dataset("data/articles_dump.json")
+    train, test = train_test_split(articles, test_size=.3, random_state=2002)
 
     tfidf_vectorizer = StemVectorizer(stop_words=stopwords.words("dutch"), max_features=5000, strip_accents="unicode")
     tfidf_vectorizer.fit(articles["content"])
@@ -27,7 +24,17 @@ def main():
     svm = LinearSVC(dual="auto")
     svm.fit(train_content, train["fieldsOfInterest"])
 
-    print(accuracy_score(svm.predict(test_content), test["fieldsOfInterest"]))
+    accuracy = accuracy_score(train["fieldsOfInterest"], svm.predict(train_content))
+    print(f"SVM reached train accuracy of {accuracy}")
+    accuracy = accuracy_score(test["fieldsOfInterest"], svm.predict(test_content))
+    print(f"SVM reached test accuracy of {accuracy}")
 
-if __name__ == "__main__":
-    main()
+    dump(tfidf_vectorizer, "models/vectorizer.joblib")
+    dump(svm, "models/classifier.joblib")
+
+def classify(text):
+    if not os.path.exists("models/vectorizer.joblib") or not os.path.exists("models/classifier.joblib"):
+        train()
+    vectorizer = load("models/vectorizer.joblib")
+    model = load("models/classifier.joblib")
+    return model.predict(vectorizer.transform((text,)))
