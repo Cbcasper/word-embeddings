@@ -2,10 +2,10 @@
     import axios from "axios";
     import { get, writable } from "svelte/store";
     import { tick, createEventDispatcher, onMount } from "svelte";
+
+    import { parameters } from "../stores.js";
     import ButtonPanel from "./ButtonPanel.svelte";
 
-    export let parameters;
-    
     let embedding;
     let similarity;
     let loadEmbeddings = () => axios.get("http://127.0.0.1:5000/embeddings");
@@ -28,7 +28,7 @@
     }
 </script>
 
-<div class="flex-none w-48 flex flex-col divide-y-2 divide-sky-800">
+<div class="w-full h-full flex flex-col divide-y-2 divide-sky-800">
     {#await loadEmbeddings() then options}
         <div class="h-1/2 divide-y-2 divide-sky-800">
             <div class="p-3 text-xl">Embeddings</div>
