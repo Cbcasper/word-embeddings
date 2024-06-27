@@ -99,13 +99,12 @@
 </script>
 
 {#if ranking.status === "show"}
-    <div class="w-[36rem] flex-none rounded-md overflow-hidden text-white inset-ring grid grid-cols-2"
-        class:ring-4={ranking.selected} class:ring-red-800={ranking.selected}>
+    <button class="w-[36rem] flex-none rounded-md overflow-hidden text-white inset-ring grid grid-cols-2"
+        class:ring-4={ranking.selected} class:ring-red-800={ranking.selected} on:click={select}>
         <div class="h-full w-full overflow-hidden flex flex-col divide-y-2 divide-sky-200 bg-sky-800">
-            <button class="flex-none px-4 py-2 text-xl text-center overflow-hidden text-ellipsis whitespace-nowrap"
-                    on:click={select}>
+            <div class="flex-none px-4 py-2 text-xl text-center overflow-hidden text-ellipsis whitespace-nowrap">
                 {ranking.article.title}
-            </button>
+            </div>
             <div class="w-full flex text-xl divide-x-2 divide-sky-200">
                 <div class="w-1/2 p-2 text-center">{ranking.parameters.embedding}</div>
                 <div class="w-1/2 p-2 text-center">{ranking.parameters.similarity}</div>
@@ -134,7 +133,7 @@
                 {selectedArticle.field.content}
             </div>
         </div>
-    </div>
+    </button>
 {:else if ranking.status === "loading"}
     <div class="w-[18rem] flex-none rounded-md overflow-hidden text-white inset-ring"
         class:ring-4={ranking.selected} class:ring-red-800={ranking.selected}>

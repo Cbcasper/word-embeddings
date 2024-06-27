@@ -41,6 +41,12 @@
                     status: "show",
                     accuracy: response.data.accuracy,
                 };
+            })
+            .catch(() => {
+                accuracies = {
+                    ...accuracies,
+                    status: "error"
+                };
             });
     }
     dataset.subscribe(update);
@@ -59,12 +65,12 @@
     }
 </script>
 
-<div class="w-72 flex-none rounded-md overflow-hidden divide-y-2 divide-sky-200 text-white bg-teal-800 inset-ring flex flex-col"
-     class:ring-4={accuracies.selected} class:ring-red-800={accuracies.selected}>
+<button class="w-72 flex-none rounded-md overflow-hidden divide-y-2 divide-sky-200 text-white bg-teal-800 inset-ring flex flex-col"
+     class:ring-4={accuracies.selected} class:ring-red-800={accuracies.selected} on:click={select}>
     {#if accuracies.status === "show"}
-        <button class="flex-none px-4 py-2 text-xl text-center overflow-hidden text-ellipsis whitespace-nowrap" on:click={select}>
-            {accuracies.dataset.title}
-        </button>
+        <div class="flex-none px-4 py-2 text-xl text-center overflow-hidden text-ellipsis whitespace-nowrap">
+            {accuracies.dataset.id}
+        </div>
         <div class="w-full flex text-xl divide-x-2 divide-sky-200">
             <div class="w-1/2 p-2 text-center">{accuracies.parameters.embedding}</div>
             <div class="w-1/2 p-2 text-center">{accuracies.parameters.similarity}</div>
@@ -85,5 +91,11 @@
             </div>
         </div>
         <div></div>
+    {:else if accuracies.status === "error"}
+        <div class="h-full w-full flex justify-center items-center">
+            <div class="p-2 h-fit w-fit text-2xl bg-red-800 rounded-md">
+                Can't evaluate dataset
+            </div>
+        </div>
     {/if}
-</div>
+</button>

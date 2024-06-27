@@ -14,5 +14,5 @@ def evaluate(dataset_path, embedding_id, similarity_id):
 
     ranker = Ranker(embedding_id, similarity_id, fieldsets["v1"])
 
-    predictions = [ranker.rank(article)[0][1] for article in tqdm(content)]
+    predictions = [ranker.rank(article)[0][1]["content"] for article in tqdm(content)]
     return accuracy_score(articles["fieldsOfInterest"], predictions)

@@ -66,7 +66,7 @@ class FieldRanking(Resource):
         return {"ranking": [{"score": score, "field": field} for score, field in ranking],
                 "similarity_parameters": similarities[similarity_id]["parameters"]}
 
-computed_rankers = dict()
+computed_document_rankers = dict()
 
 class DocumentRanking(Resource):
     def get(self):
@@ -79,11 +79,11 @@ class DocumentRanking(Resource):
         similarity_id = request.args["similarity"]
 
         parameters = (dataset_id, embedding_id, similarity_id)
-        if parameters in computed_rankers:
-            ranker = computed_rankers[parameters]
+        if parameters in computed_document_rankers:
+            ranker = computed_document_rankers[parameters]
         else:
             ranker = Ranker(embedding_id, similarity_id, datasets[dataset_id].data["articles"], show_progress_bar=True)
-            computed_rankers[parameters] = ranker
+            computed_document_rankers[parameters] = ranker
 
         ranking = ranker.rank_query(article, show_progress_bar=True)
         return {"ranking": [{"score": score, "field": field} for score, field in ranking],

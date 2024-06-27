@@ -71,7 +71,7 @@
                 Article Ranking
             </svelte:fragment>
         </AddButton>
-        <AddButton on:click={() => { addAccuracies(); }} disabled={true}>
+        <AddButton on:click={() => { addAccuracies(); }} disabled={false}>
             <FaCheck slot="button"/>
             <svelte:fragment slot="title">
                 Evaluate Ranking
