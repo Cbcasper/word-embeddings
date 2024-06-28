@@ -3,6 +3,10 @@ flask-restful
 flask-cors
 loguru
 numpy
+pandas
 sentence_transformers
 scikit-learn
 gensim
+nltk
+transformers
+fasttext
